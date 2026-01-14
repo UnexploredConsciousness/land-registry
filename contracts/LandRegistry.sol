@@ -35,6 +35,18 @@ contract LandRegistry is AccessControl {
         _grantRole(REGISTRAR_ROLE, admin);
     }
 
+    function addRegistrar(address account)
+        external onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        _grantRole(REGISTRAR_ROLE, account);
+    }
+
+    function removeRegistrar(address account)
+        external onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        revokeRole(REGISTRAR_ROLE, account);
+    }
+
     modifier onlyActive(uint256 parcelId) {
         require(exists[parcelId], "Parcel does not exist");
         require(parcels[parcelId].isActive, "Parcel inactive");
