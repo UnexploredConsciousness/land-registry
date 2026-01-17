@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Land Registry DApp</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+</head>
+<body>
+    <h2>Land Registry</h2>
+
+    <button onclick="connectWallet()">Connect Wallet</button>
+    <p id="wallet"></p>
+
+    <h3>Register Parcel (Registrar)</h3>
+    <input id="regParcelId" placeholder="Parcel ID" />
+    <input id="regOwner" placeholder="Owner Address" />
+    <input id="regMeta" placeholder="Metadata CID" />
+    <button onclick="registerParcel()">Register</button>
+
+    <h3>Transfer Title</h3>
+    <input id="txParcelId" placeholder="Parcel ID" />
+    <input id="txTo" placeholder="New Owner Address" />
+    <button onclick="transferTitle()">Transfer</button>
+
+    <p id="status"></p>
+
+    <!-- IMPORTANT: ethers FIRST, then app.js -->
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
