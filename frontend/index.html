@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <title>Land Registry DApp</title>
-    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </head>
 <body>
     <h2>Land Registry</h2>
@@ -11,16 +10,87 @@
     <button onclick="connectWallet()">Connect Wallet</button>
     <p id="wallet"></p>
 
+    <div id="dashboard" style="display:none;">
+
+  <p><b>Connected Address:</b> <span id="accountAddress"></span></p>
+  <p><b>Role:</b> <span id="roleLabel"></span></p>
+
+  <!-- Admin -->
+  <div id="adminActions" style="display:none;">
+    <h3>Admin Actions</h3>
+    <button id="btnViewParcel">View Parcel</button>
+    <button id="btnRegisterParcel">Register Parcel</button>
+    <button id="btnTransferParcel">Transfer Parcel</button>
+    <button id="btnViewEncumbrance">View Encumbered Parcel</button>
+    <button id="btnRegisterEncumbrance">Register Encumbrance</button>
+    <button id="btnResolveEncumbrance">Resolve Encumbrance</button>
+  </div>
+
+  <!-- Registrar -->
+  <div id="registrarActions" style="display:none;">
+    <h3>Registrar Actions</h3>
+    <button id="btnRegisterParcelR">Register Parcel</button>
+    <button id="btnViewParcelR">View Parcel</button>
+    <button id="btnTransferParcelR">Transfer Parcel</button>
+    <button id="btnViewEncumbranceR">View Encumbrance</button>
+  </div>
+
+  <!-- User -->
+  <div id="userActions" style="display:none;">
+    <h3>User Actions</h3>
+    <button id="btnViewParcelU">View Parcel</button>
+    <button id="btnViewEncumbranceU">View Encumbrance</button>
+  </div>
+
+</div>
+
+<div id="sectionRegisterParcel" style="display:none;">
     <h3>Register Parcel (Registrar)</h3>
     <input id="regParcelId" placeholder="Parcel ID" />
     <input id="regOwner" placeholder="Owner Address" />
     <input id="regMeta" placeholder="Metadata CID" />
     <button onclick="registerParcel()">Register</button>
+</div>
 
+<div id="sectionTransferParcel" style="display:none;">
     <h3>Transfer Title</h3>
     <input id="txParcelId" placeholder="Parcel ID" />
     <input id="txTo" placeholder="New Owner Address" />
     <button onclick="transferTitle()">Transfer</button>
+</div>
+
+<div id="sectionViewParcel" style="display:none;">
+  <h3>View Parcel</h3>
+  <input id="viewParcelId" placeholder="Parcel ID" />
+  <button onclick="viewParcel()">View</button>
+
+  <pre id="parcelOutput"></pre>
+</div>
+
+<div id="sectionViewEncumbrance" style="display:none;">
+  <h3>View Encumbrance</h3>
+  <input id="viewEncParcelId" placeholder="Parcel ID" />
+  <button onclick="viewEncumbrance()">View</button>
+
+  <pre id="encumbranceOutput"></pre>
+</div>
+
+<div id="sectionRegisterEncumbrance" style="display:none;">
+  <h3>Register Encumbrance (Admin)</h3>
+
+  <input id="encParcelId" placeholder="Parcel ID" />
+  <input id="encHolder" placeholder="Encumbrance Holder Address" />
+  <input id="encNote" placeholder="Encumbrance Note" />
+
+  <button onclick="registerEncumbrance()">Register Encumbrance</button>
+</div>
+
+<div id="sectionResolveEncumbrance" style="display:none;">
+  <h3>Resolve Encumbrance (Admin)</h3>
+
+  <input id="resolveEncParcelId" placeholder="Parcel ID" />
+  <button onclick="resolveEncumbrance()">Resolve</button>
+</div>
 
     <p id="status"></p>
 

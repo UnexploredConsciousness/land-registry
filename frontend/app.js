@@ -1,6 +1,7 @@
 let provider;
 let signer;
 let contract;
+let account;
 
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = [
@@ -568,11 +569,107 @@ async function connectWallet() {
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
 
-    const address = await signer.getAddress();
-    document.getElementById("wallet").innerText = "Connected: " + address;
+    account = await signer.getAddress();
+    document.getElementById("wallet").innerText = "Connected: " + account;
 
     contract = new ethers.Contract(contractAddress, contractABI, signer);
+
+     document.getElementById("dashboard").style.display = "block";
+  document.getElementById("accountAddress").innerText = account;
+
+  const ADMIN_ROLE = await contract.DEFAULT_ADMIN_ROLE();
+  const REGISTRAR_ROLE = await contract.REGISTRAR_ROLE();
+
+  const isAdmin = await contract.hasRole(ADMIN_ROLE, account);
+  const isRegistrar = await contract.hasRole(REGISTRAR_ROLE, account);
+
+  if (isAdmin) {
+    document.getElementById("adminActions").style.display = "block";
+    document.getElementById("roleLabel").innerText = "Admin";
+  } else if (isRegistrar) {
+    document.getElementById("registrarActions").style.display = "block";
+    document.getElementById("roleLabel").innerText = "Registrar";
+  } else {
+    document.getElementById("userActions").style.display = "block";
+    document.getElementById("roleLabel").innerText = "User";
+  }
+
+  document.getElementById("btnRegisterParcel")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionRegisterParcel").style.display = "block";
+});
+
+document.getElementById("btnRegisterParcelR")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionRegisterParcel").style.display = "block";
+});
+
+document.getElementById("btnTransferParcel")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionTransferParcel").style.display = "block";
+});
+
+document.getElementById("btnTransferParcelR")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionTransferParcel").style.display = "block";
+});
+
+document.getElementById("btnViewParcel")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewParcel").style.display = "block";
+});
+
+document.getElementById("btnViewParcelR")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewParcel").style.display = "block";
+});
+
+document.getElementById("btnViewParcelU")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewParcel").style.display = "block";
+});
+
+document.getElementById("btnViewEncumbrance")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewEncumbrance").style.display = "block";
+});
+
+document.getElementById("btnViewEncumbranceR")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewEncumbrance").style.display = "block";
+});
+
+document.getElementById("btnViewEncumbranceU")?.addEventListener("click", () => {
+  hideAllSections();
+  document.getElementById("sectionViewEncumbrance").style.display = "block";
+});
+
+document
+  .getElementById("btnRegisterEncumbrance")
+  ?.addEventListener("click", () => {
+    hideAllSections();
+    document.getElementById("sectionRegisterEncumbrance").style.display =
+      "block";
+  });
+
+  document
+  .getElementById("btnResolveEncumbrance")
+  ?.addEventListener("click", () => {
+    hideAllSections();
+    document.getElementById("sectionResolveEncumbrance").style.display = "block";
+  });
+
 }
+
+function hideAllSections() {
+  document.getElementById("sectionRegisterParcel").style.display = "none";
+  document.getElementById("sectionTransferParcel").style.display = "none";
+  document.getElementById("sectionViewParcel").style.display = "none";
+  document.getElementById("sectionViewEncumbrance").style.display = "none";
+  document.getElementById("sectionRegisterEncumbrance").style.display ="none";
+  document.getElementById("sectionResolveEncumbrance").style.display ="none";
+}
+
 
 async function registerParcel() {
   if (!contract){
@@ -618,7 +715,143 @@ async function transferTitle() {
         await tx.wait();
         document.getElementById("status").innerText = "Title transferred successfully";
     } catch (err) {
-        document.getElementById("status").innerText =
-            err?.error?.message || err.message;
-    }
+  let msg = "Transfer failed";
+
+  if (err?.error?.data?.message) {
+    msg = err.error.data.message;
+  } else if (err?.data?.message) {
+    msg = err.data.message;
+  } else if (err?.reason) {
+    msg = err.reason;
+  } else if (err?.message) {
+    msg = err.message;
+  }
+
+  document.getElementById("status").innerText = msg;
 }
+
+}
+
+async function viewParcel() {
+  if (!contract) {
+    document.getElementById("parcelOutput").innerText =
+      "Please connect wallet first";
+    return;
+  }
+
+  try {
+    const id = document.getElementById("viewParcelId").value;
+
+    const parcel = await contract.getParcel(id);
+
+    const output = `
+Owner: ${parcel.owner}
+Registrar: ${parcel.registrar}
+Active: ${parcel.active}
+Encumbrance Active: ${parcel.encActive}
+
+Encumbrance Holder: ${parcel.encHolder}
+Encumbrance Note: ${parcel.encNote}
+
+Owners History:
+${parcel.ownersHistory.join("\n")}
+    `;
+
+    document.getElementById("parcelOutput").innerText = output;
+  } catch (err) {
+    document.getElementById("parcelOutput").innerText =
+      err?.reason || err.message || "Failed to fetch parcel";
+  }
+}
+
+async function viewEncumbrance() {
+  if (!contract) {
+    document.getElementById("encumbranceOutput").innerText =
+      "Please connect wallet first";
+    return;
+  }
+
+  try {
+    const id = document.getElementById("viewEncParcelId").value;
+    const parcel = await contract.getParcel(id);
+
+    if (!parcel.encActive) {
+      document.getElementById("encumbranceOutput").innerText =
+        "No encumbrance on this parcel.";
+      return;
+    }
+
+    const output = `
+Encumbrance Status: ACTIVE
+Holder: ${parcel.encHolder}
+Note: ${parcel.encNote}
+    `;
+
+    document.getElementById("encumbranceOutput").innerText = output;
+  } catch (err) {
+    document.getElementById("encumbranceOutput").innerText =
+      err?.reason || err.message || "Failed to fetch encumbrance";
+  }
+}
+
+async function registerEncumbrance() {
+  if (!contract) {
+    document.getElementById("status").innerText =
+      "Please connect wallet first";
+    return;
+  }
+
+  try {
+    const id = document.getElementById("encParcelId").value;
+    const holder = document.getElementById("encHolder").value;
+    const note = document.getElementById("encNote").value;
+
+    const tx = await contract.addEncumbrance(id, holder, note);
+    document.getElementById("status").innerText =
+      "Registering encumbrance...";
+    await tx.wait();
+
+    document.getElementById("status").innerText =
+      "Encumbrance registered successfully";
+  } catch (err) {
+    let msg = "Transaction failed";
+
+    if (err?.error?.data?.message) msg = err.error.data.message;
+    else if (err?.reason) msg = err.reason;
+    else if (err?.message) msg = err.message;
+
+    document.getElementById("status").innerText = msg;
+  }
+}
+
+async function resolveEncumbrance() {
+  if (!contract) {
+    document.getElementById("status").innerText =
+      "Please connect wallet first";
+    return;
+  }
+
+  try {
+    const id = document.getElementById("resolveEncParcelId").value;
+
+    const tx = await contract.resolveEncumbrance(id);
+    document.getElementById("status").innerText =
+      "Resolving encumbrance...";
+    await tx.wait();
+
+    document.getElementById("status").innerText =
+      "Encumbrance resolved successfully";
+  } catch (err) {
+    let msg = "Failed to resolve encumbrance";
+
+    if (err?.error?.data?.message) msg = err.error.data.message;
+    else if (err?.reason) msg = err.reason;
+    else if (err?.message) msg = err.message;
+
+    document.getElementById("status").innerText = msg;
+  }
+}
+
+
+
+
