@@ -3,6 +3,12 @@ let signer;
 let contract;
 let account;
 
+if (window.ethereum) {
+    window.ethereum.on("accountsChanged", () => {
+        window.location.reload();
+    });
+}
+
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 const contractABI = [
     {
@@ -570,11 +576,10 @@ async function connectWallet() {
     signer = provider.getSigner();
 
     account = await signer.getAddress();
-    document.getElementById("wallet").innerText = "Connected: " + account;
 
     contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-     document.getElementById("dashboard").style.display = "block";
+     document.getElementById("mainApp").style.display = "block";
   document.getElementById("accountAddress").innerText = account;
 
   const ADMIN_ROLE = await contract.DEFAULT_ADMIN_ROLE();
@@ -582,6 +587,14 @@ async function connectWallet() {
 
   const isAdmin = await contract.hasRole(ADMIN_ROLE, account);
   const isRegistrar = await contract.hasRole(REGISTRAR_ROLE, account);
+
+  // Fade out cover page
+document.getElementById("coverPage").style.opacity = "0";
+
+setTimeout(() => {
+  document.getElementById("coverPage").style.display = "none";
+  document.getElementById("mainApp").style.display = "block";
+}, 800);
 
   if (isAdmin) {
     document.getElementById("adminActions").style.display = "block";

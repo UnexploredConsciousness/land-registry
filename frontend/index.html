@@ -3,48 +3,253 @@
 <head>
     <meta charset="UTF-8" />
     <title>Land Registry DApp</title>
+  
+  <style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ================= COVER PAGE ================= */
+
+#coverPage {
+  height: 100vh;
+  background: linear-gradient(135deg, #0f9b0f, #00b09b);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.8s ease;
+}
+
+.card {
+  background: #f9fdf9;
+  border-radius: 16px;
+  padding: 50px;
+  width: 460px;
+  text-align: center;
+  color: #1b5e20;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+}
+
+.card h1 {
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #2e7d32;
+  margin-bottom: 30px;
+}
+
+.card button {
+  padding: 12px 26px;
+  border-radius: 8px;
+  border: none;
+  background: #0f9b0f;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.card button:hover {
+  background: #0c7a0c;
+  transform: translateY(-2px);
+}
+
+.footer {
+  margin-top: 30px;
+  font-size: 12px;
+  color: #388e3c;
+}
+
+/* ================= MAIN APP ================= */
+
+#mainApp {
+  padding: 30px;
+}
+
+h3 {
+  color: #1b5e20;
+}
+
+button {
+  margin: 6px 4px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #0f9b0f;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+button:hover {
+  background-color: #e8f5e9;
+}
+
+input {
+  margin: 6px 4px;
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+pre {
+  background: #f1f8f4;
+  padding: 10px;
+  border-radius: 6px;
+  white-space: pre-wrap;
+}
+
+#status {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard {
+  padding: 40px;
+  background: #f4fbf6;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  margin-bottom: 40px;
+}
+
+.topbar h2 {
+  margin: 0 0 10px 0;
+  color: #1b5e20;
+}
+
+.role-badge {
+  background: #0f9b0f;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.panel h3 {
+  margin-bottom: 25px;
+  color: #1b5e20;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 25px;
+}
+
+.action-card {
+  background: white;
+  padding: 35px;
+  text-align: center;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: 0.3s ease;
+  font-weight: 500;
+  color: #1b5e20;
+}
+
+.action-card:hover {
+  transform: translateY(-6px);
+  background: #e8f5e9;
+}
+
+.form-section {
+  margin-top: 40px;
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.form-section h3 {
+  margin-top: 0;
+  color: #1b5e20;
+}
+</style>
+
 </head>
 <body>
-    <h2>Land Registry</h2>
+   <!-- COVER PAGE -->
+<div id="coverPage">
+  <div class="card">
 
-    <button onclick="connectWallet()">Connect Wallet</button>
-    <p id="wallet"></p>
+    <img src="house.png" style="width:50px; margin-bottom:15px;" />
 
-    <div id="dashboard" style="display:none;">
+    <h1>Blockchain Land Registry</h1>
 
-  <p><b>Connected Address:</b> <span id="accountAddress"></span></p>
-  <p><b>Role:</b> <span id="roleLabel"></span></p>
+    <div class="subtitle">
+      Secure • Transparent • Tamper-Proof Land Records
+    </div>
 
-  <!-- Admin -->
-  <div id="adminActions" style="display:none;">
-    <h3>Admin Actions</h3>
-    <button id="btnViewParcel">View Parcel</button>
-    <button id="btnRegisterParcel">Register Parcel</button>
-    <button id="btnTransferParcel">Transfer Parcel</button>
-    <button id="btnViewEncumbrance">View Encumbered Parcel</button>
-    <button id="btnRegisterEncumbrance">Register Encumbrance</button>
-    <button id="btnResolveEncumbrance">Resolve Encumbrance</button>
+    <button onclick="connectWallet()">
+      Connect MetaMask
+    </button>
+
+    <div class="footer">
+      Powered by Ethereum Smart Contracts
+    </div>
+
   </div>
-
-  <!-- Registrar -->
-  <div id="registrarActions" style="display:none;">
-    <h3>Registrar Actions</h3>
-    <button id="btnRegisterParcelR">Register Parcel</button>
-    <button id="btnViewParcelR">View Parcel</button>
-    <button id="btnTransferParcelR">Transfer Parcel</button>
-    <button id="btnViewEncumbranceR">View Encumbrance</button>
-  </div>
-
-  <!-- User -->
-  <div id="userActions" style="display:none;">
-    <h3>User Actions</h3>
-    <button id="btnViewParcelU">View Parcel</button>
-    <button id="btnViewEncumbranceU">View Encumbrance</button>
-  </div>
-
 </div>
 
-<div id="sectionRegisterParcel" style="display:none;">
+<div id="mainApp" style="display:none;">
+
+  <div class="dashboard">
+
+    <div class="topbar">
+      <h2>Blockchain Land Registry Dashboard</h2>
+      <p><b>Connected:</b> <span id="accountAddress"></span></p>
+      <p><b>Role:</b> <span class="role-badge" id="roleLabel"></span></p>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminActions" class="panel" style="display:none;">
+      <h3>Admin Panel</h3>
+      <div class="card-grid">
+        <div class="action-card" id="btnRegisterParcel">Register Parcel</div>
+        <div class="action-card" id="btnViewParcel">View Parcel</div>
+        <div class="action-card" id="btnTransferParcel">Transfer Title</div>
+        <div class="action-card" id="btnRegisterEncumbrance">Register Encumbrance</div>
+        <div class="action-card" id="btnResolveEncumbrance">Resolve Encumbrance</div>
+        <div class="action-card" id="btnViewEncumbrance">View Encumbrance</div>
+      </div>
+    </div>
+
+    <!-- Registrar Panel -->
+    <div id="registrarActions" class="panel" style="display:none;">
+      <h3>Registrar Panel</h3>
+      <div class="card-grid">
+        <div class="action-card" id="btnRegisterParcelR">Register Parcel</div>
+        <div class="action-card" id="btnViewParcelR">View Parcel</div>
+        <div class="action-card" id="btnTransferParcelR">Transfer Title</div>
+        <div class="action-card" id="btnViewEncumbranceR">View Encumbrance</div>
+      </div>
+    </div>
+
+    <!-- User Panel -->
+    <div id="userActions" class="panel" style="display:none;">
+      <h3>User Panel</h3>
+      <div class="card-grid">
+        <div class="action-card" id="btnViewParcelU">View Parcel</div>
+        <div class="action-card" id="btnViewEncumbranceU">View Encumbrance</div>
+      </div>
+    </div>
+
+    <div id="sectionRegisterParcel" style="display:none;">
     <h3>Register Parcel (Registrar)</h3>
     <input id="regParcelId" placeholder="Parcel ID" />
     <input id="regOwner" placeholder="Owner Address" />
@@ -93,6 +298,10 @@
 </div>
 
     <p id="status"></p>
+
+  </div>
+
+</div>
 
     <!-- IMPORTANT: ethers FIRST, then app.js -->
     <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
