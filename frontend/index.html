@@ -90,6 +90,15 @@ button:hover {
   background-color: #e8f5e9;
 }
 
+button.danger {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+button.danger:hover {
+  background-color: #ffebee;
+}
+
 input {
   margin: 6px 4px;
   padding: 6px;
@@ -167,6 +176,10 @@ pre {
   background: #e8f5e9;
 }
 
+.action-card.admin-special {
+  border: 2px solid #0f9b0f;
+}
+
 .form-section {
   margin-top: 40px;
   background: white;
@@ -226,6 +239,7 @@ pre {
         <div class="action-card" id="btnRegisterEncumbrance">Register Encumbrance</div>
         <div class="action-card" id="btnResolveEncumbrance">Resolve Encumbrance</div>
         <div class="action-card" id="btnViewEncumbrance">View Encumbrance</div>
+        <div class="action-card admin-special" id="btnManageRegistrars">Manage Registrars</div>
       </div>
     </div>
 
@@ -246,6 +260,22 @@ pre {
       <div class="card-grid">
         <div class="action-card" id="btnViewParcelU">View Parcel</div>
         <div class="action-card" id="btnViewEncumbranceU">View Encumbrance</div>
+      </div>
+    </div>
+
+    <!-- Manage Registrars Section (Admin only) -->
+    <div id="sectionManageRegistrars" style="display:none;">
+      <h3>Manage Registrars (Admin)</h3>
+      <p style="color:#555; font-size:14px;">Grant or revoke the Registrar role for any wallet address.</p>
+
+      <div style="margin-bottom: 20px;">
+        <input id="addRegistrarAddress" placeholder="Wallet Address (0x...)" style="width: 380px;" />
+        <button onclick="addRegistrar()">Add Registrar</button>
+      </div>
+
+      <div>
+        <input id="removeRegistrarAddress" placeholder="Wallet Address (0x...)" style="width: 380px;" />
+        <button class="danger" onclick="removeRegistrar()">Remove Registrar</button>
       </div>
     </div>
 

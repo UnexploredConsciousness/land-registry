@@ -9,7 +9,7 @@ if (window.ethereum) {
     });
 }
 
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const contractAddress = "0x946223AbAA400224095411F7Fc716943C11dC4fE";
 const contractABI = [
     {
       "inputs": [
@@ -566,11 +566,33 @@ const contractABI = [
 
 async function connectWallet() {
     if (!window.ethereum) {
-        alert("MetaMask not found");
+        alert("MetaMask not found. Please install MetaMask.");
         return;
     }
 
     await ethereum.request({ method: "eth_requestAccounts" });
+
+    // Auto-switch to Polygon Amoy
+    try {
+        await window.ethereum.request({
+            method: "wallet_switchEthereumChain",
+            params: [{ chainId: "0x13882" }],
+        });
+    } catch (switchError) {
+        // If Amoy not in MetaMask yet, add it automatically
+        if (switchError.code === 4902) {
+            await window.ethereum.request({
+                method: "wallet_addEthereumChain",
+                params: [{
+                    chainId: "0x13882",
+                    chainName: "Polygon Amoy",
+                    rpcUrls: ["https://polygon-amoy.g.alchemy.com/v2/BFJZiru1vJJ-wX3XxTgXm"],
+                    nativeCurrency: { name: "POL", symbol: "POL", decimals: 18 },
+                    blockExplorerUrls: ["https://amoy.polygonscan.com"]
+                }]
+            });
+        }
+    }
 
     provider = new ethers.providers.Web3Provider(window.ethereum);
     signer = provider.getSigner();
@@ -672,6 +694,13 @@ document
     document.getElementById("sectionResolveEncumbrance").style.display = "block";
   });
 
+  document
+  .getElementById("btnManageRegistrars")
+  ?.addEventListener("click", () => {
+    hideAllSections();
+    document.getElementById("sectionManageRegistrars").style.display = "block";
+  });
+
 }
 
 function hideAllSections() {
@@ -679,8 +708,59 @@ function hideAllSections() {
   document.getElementById("sectionTransferParcel").style.display = "none";
   document.getElementById("sectionViewParcel").style.display = "none";
   document.getElementById("sectionViewEncumbrance").style.display = "none";
-  document.getElementById("sectionRegisterEncumbrance").style.display ="none";
-  document.getElementById("sectionResolveEncumbrance").style.display ="none";
+  document.getElementById("sectionRegisterEncumbrance").style.display = "none";
+  document.getElementById("sectionResolveEncumbrance").style.display = "none";
+  document.getElementById("sectionManageRegistrars").style.display = "none";
+}
+
+async function addRegistrar() {
+  if (!contract) {
+    document.getElementById("status").innerText = "Please connect wallet first";
+    return;
+  }
+  try {
+    const address = document.getElementById("addRegistrarAddress").value.trim();
+    if (!ethers.utils.isAddress(address)) {
+      document.getElementById("status").innerText = "Invalid wallet address";
+      return;
+    }
+    document.getElementById("status").innerText = "Sending transaction...";
+    const tx = await contract.addRegistrar(address);
+    await tx.wait();
+    document.getElementById("status").innerText = "✅ Registrar added successfully: " + address;
+    document.getElementById("addRegistrarAddress").value = "";
+  } catch (err) {
+    let msg = "Failed to add registrar";
+    if (err?.error?.data?.message) msg = err.error.data.message;
+    else if (err?.reason) msg = err.reason;
+    else if (err?.message) msg = err.message;
+    document.getElementById("status").innerText = "❌ " + msg;
+  }
+}
+
+async function removeRegistrar() {
+  if (!contract) {
+    document.getElementById("status").innerText = "Please connect wallet first";
+    return;
+  }
+  try {
+    const address = document.getElementById("removeRegistrarAddress").value.trim();
+    if (!ethers.utils.isAddress(address)) {
+      document.getElementById("status").innerText = "Invalid wallet address";
+      return;
+    }
+    document.getElementById("status").innerText = "Sending transaction...";
+    const tx = await contract.removeRegistrar(address);
+    await tx.wait();
+    document.getElementById("status").innerText = "✅ Registrar removed successfully: " + address;
+    document.getElementById("removeRegistrarAddress").value = "";
+  } catch (err) {
+    let msg = "Failed to remove registrar";
+    if (err?.error?.data?.message) msg = err.error.data.message;
+    else if (err?.reason) msg = err.reason;
+    else if (err?.message) msg = err.message;
+    document.getElementById("status").innerText = "❌ " + msg;
+  }
 }
 
 
